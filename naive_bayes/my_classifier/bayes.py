@@ -36,7 +36,7 @@ class MyClassifier:
                 self.db_cursor.execute("CREATE TABLE IF NOT EXISTS "
                                        "category_counts ("
                                        "category_id INTEGER PRIMARY KEY,"
-                                       "name text NOT NULL,"
+                                       "name text NOT NULL UNIQUE, "
                                        "count INTEGER NOT NULL DEFAULT(0))")
 
 
@@ -65,14 +65,10 @@ class MyClassifier:
                                                "category_id=? AND word=? ",
                                                (count + 1, cat_id, feature))
 
-
         def increment_category(self, category):
-                count = self.get_category_count(category)
-                if count == 0:
-                        self._create_category(category, 1)
-                else:
-                        self.db_cursor.execute("UPDATE category_counts SET "
-                                               "count=? WHERE name=? ",
+                count = self.get_category_count(category) + 1
+                self.db_cursor.execute("UPDATE category_counts SET "
+                                       "count=? WHERE name=? ",
                                                (count, category))
 
 
@@ -98,6 +94,7 @@ class MyClassifier:
                         " name=?", (category,))
                 id = self.db_cursor.fetchone()
                 if id == None:
+                        self._create_category(category, 0)
                         return 0
                 return float(id[0])
 
@@ -147,3 +144,10 @@ class MyClassifier:
                                                                 count ))
                 return self.db_cursor.lastrowid
 
+
+        def feature_probability(self, feature, category) -> float:
+                category_c = self.get_category_count(category)
+                feature_c = self.get_feature_count(feature, category)
+                if category_c == 0:
+                        return 0
+                return feature_c/category_c
