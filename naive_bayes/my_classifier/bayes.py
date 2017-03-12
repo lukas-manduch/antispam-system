@@ -145,9 +145,20 @@ class MyClassifier:
                 return self.db_cursor.lastrowid
 
 
-        def feature_probability(self, feature, category) -> float:
+        def _feature_probability(self, feature, category) -> float:
                 category_c = self.get_category_count(category)
                 feature_c = self.get_feature_count(feature, category)
                 if category_c == 0:
                         return 0
                 return feature_c/category_c
+
+        def feature_probability(self, feature, category) -> float:
+                imaginary_count = 2
+                weight = 0.5
+                total_occurences = sum(
+	                [self.get_feature_count(feature, cat)
+	                 for cat in self.categories()])
+                return ((imaginary_count * weight) +
+                        (total_occurences *
+                         self._feature_probability(feature, category))) / (
+                total_occurences + imaginary_count)
