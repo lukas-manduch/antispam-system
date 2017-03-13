@@ -162,3 +162,21 @@ class MyClassifier:
                         (total_occurences *
                          self._feature_probability(feature, category))) / (
                 total_occurences + imaginary_count)
+
+class NaiveBayes:
+        def __init__(self, classifier):
+                self.classifier = classifier
+
+        
+        def _document_probability(self, document, category) -> float:
+                feats = self.classifier._get_words(document)
+                prob = 1
+                for feat in feats:
+                        prob *= self.classifier.feature_probability(feat, category)
+                return prob
+        
+        def document_probability(self, document, category) -> float:
+                doc_prob = self._document_probability(document, category)
+                cat_prob = (self.classifier.get_category_count(category) /
+                            self.classifier.total_count())
+                return doc_prob*cat_prob
