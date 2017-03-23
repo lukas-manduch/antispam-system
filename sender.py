@@ -1,18 +1,20 @@
-from mail_sender.sender import *
+from yahoo.email_parser import *
+from yahoo.sender import *
 from email import *
 import sys
 
 if len(sys.argv) != 2:
     print("Script takes one argument - name of eml file")
+    print(str(len(sys.argv)) + " given")
     exit(1)
+
 f = open(sys.argv[1], "r")
-parser = Parser.FeedParser()
-parser.feed(f.read())
-msg = parser.close()
-
-print(msg['Reply-to'])
+eml_parser = EmlParser(f.read())
 
 
-#exit()
 s = MailSender()
-s.fake_mail(msg['Reply-to'], msg['From'] ,msg['Subject'], msg.get_payload())
+s.fake_mail(eml_parser.get_from_address(),
+            eml_parser.get_sender(),
+            eml_parser.get_subject(),
+            eml_parser.get_body())
+
