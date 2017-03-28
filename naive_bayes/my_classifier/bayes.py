@@ -1,5 +1,6 @@
 import re
 import sqlite3
+import math
 
 """
 Classifier class holds statistics about frequency of words in documents
@@ -180,3 +181,34 @@ class NaiveBayes:
                 cat_prob = (self.classifier.get_category_count(category) /
                             self.classifier.total_count())
                 return doc_prob*cat_prob
+
+
+
+class Fisher:
+        def __init__(self, classifier):
+                self.classifier = classifier
+
+        def category_probability(self, feature, category) -> float:
+                feat_prob = self.classifier.feature_probability(feature, category)
+                total_prob = sum(self.classifier.feature_probability(feature, cat)
+                                 for cat in self.classifier.categories())
+                print("Category prob for " + feature + str(total_prob))
+                return feat_prob/total_prob
+
+
+        def _inverse_chi(self,chi,df):
+                m = chi / 2.0
+                sum = term = math.exp(-m)
+                for i in range(1, df//2):
+                        term *= m / i
+                        sum += term
+                return min(sum, 1.0)
+
+
+        def fisher_probability(self, document, category):
+                p = 1
+                features = self.classifier._get_words(document)
+                for feat in features:
+                        p *= self.category_probability(feat, category)
+                score = 2*math.log(p)
+                return self._inverse_chi(score, len(features)*2)
