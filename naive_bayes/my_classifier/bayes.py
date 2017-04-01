@@ -65,6 +65,7 @@ class MyClassifier:
                                                "SET count=? WHERE "
                                                "category_id=? AND word=? ",
                                                (count + 1, cat_id, feature))
+                
 
         def increment_category(self, category):
                 count = self.get_category_count(category) + 1
@@ -73,7 +74,7 @@ class MyClassifier:
                                                (count, category))
 
 
-        def get_feature_count(self, feauture, category) -> float:
+        def get_feature_count(self, feature, category) -> float:
                 self.db_cursor.execute(
                         "SELECT category_id FROM category_counts WHERE"
                         " name=?", (category,))
@@ -81,8 +82,9 @@ class MyClassifier:
                 if id == None:
                         return 0
                 self.db_cursor.execute("SELECT count from feature_counts "
-                                       "WHERE category_id=? LIMIT 1", (float(
-                        id[0]), ))
+                                       "WHERE category_id=? and "
+                                       "word=? LIMIT 1", (float(
+                        id[0]),feature ))
                 count = self.db_cursor.fetchone()
                 if count == None:
                         return 0
@@ -192,7 +194,6 @@ class Fisher:
                 feat_prob = self.classifier.feature_probability(feature, category)
                 total_prob = sum(self.classifier.feature_probability(feature, cat)
                                  for cat in self.classifier.categories())
-                print("Category prob for " + feature + str(total_prob))
                 return feat_prob/total_prob
 
 
