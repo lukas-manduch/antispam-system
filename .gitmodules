@@ -4,3 +4,6 @@
 [submodule "python-guerrillamail"]
 	path = python-guerrillamail
 	url = https://github.com/ncjones/python-guerrillamail.git
+[submodule "cleverwrap.py"]
+	path = cleverwrap.py
+	url = git@github.com:edwardslabs/cleverwrap.py.git
