@@ -1,9 +1,6 @@
 [submodule "api-ai-python"]
 	path = api-ai-python
 	url = https://github.com/api-ai/api-ai-python.git
-[submodule "python-guerrillamail"]
-	path = python-guerrillamail
-	url = https://github.com/ncjones/python-guerrillamail.git
 [submodule "cleverwrap.py"]
 	path = cleverwrap.py
 	url = git@github.com:edwardslabs/cleverwrap.py.git
