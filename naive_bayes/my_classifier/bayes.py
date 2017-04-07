@@ -211,5 +211,5 @@ class Fisher:
                 features = self.classifier._get_words(document)
                 for feat in features:
                         p *= self.category_probability(feat, category)
-                score = 2*math.log(p)
+                score = -2*math.log(p)
                 return self._inverse_chi(score, len(features)*2)
