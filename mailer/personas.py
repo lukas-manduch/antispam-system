@@ -5,7 +5,7 @@ import json
 """
 Class for representing personas
 Usage: 
-p = Personas(dir_name) # -> Sets data to first file 
+p = Personas(dir_name) # -> Still invalid state
 if (p.next())
 p.data()["first-name"]
 ....
