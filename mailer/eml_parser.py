@@ -2,37 +2,6 @@ from email import *
 import base64
 import chardet
 
-
-def get_text(msg):
-    """ Parses email message text, given message object
-    This doesn't support infinite recursive parts, but mail is usually not so naughty.
-    """
-    text = ""
-    print("Get text")
-    if msg.is_multipart():
-        print("Is multipart")
-        html = None
-        for part in msg.get_payload():
-            print(part.get_content_type())
-            if part.get_content_type() == 'text/plain':
-                text = part.get_payload(decode=True)
-            if part.get_content_type() == 'text/html':
-                html = part.get_payload(decode=True)
-            if part.get_content_type() == 'multipart/alternative':
-                for subpart in part.get_payload():
-                    if subpart.get_content_type() == 'text/plain':
-                        text = subpart.get_payload(decode=True)
-                    if subpart.get_content_type() == 'text/html':
-                        html = subpart.get_payload(decode=True)
-
-        if text is None:
-            return html.strip()
-        else:
-            return text.strip()
-    else:
-        text = msg.get_payload(decode=True)
-        return text.strip()
-
     
 def parse_body(message): # returns tuple plain + html
     plain = bytes()
@@ -72,27 +41,7 @@ class EmlParser:
         self.plain = bytes()
         self.content = bytes()
         self.plain , self.content = parse_body(self.msg)
-        # self.plain = get_text(self.msg)
 
-        
-    def _parse_body(self) -> str:
-        self.content = str()
-        if self.msg.is_multipart():
-            for payload in self.msg.get_payload():
-                if (payload['Content-Type'] != None and
-                    payload['Content-Type'].find('plain') != -1):
-                    # found plain text this is best case
-                    self.plain = payload.get_payload()
-                    return # Plain is best scenario
-                self.content += (payload.get_payload())
-        else:
-            self.content += (self.msg.get_payload())
-        # Not very effective check if content is not base64ed
-        try:
-            if self.msg['Content-Transfer-Encoding'].lower() == "base64":
-                self.content = str(base64.b64decode(self.content))
-        except:
-            pass
 
     def get_body(self) -> str:
         if len(self.plain) != 0:
