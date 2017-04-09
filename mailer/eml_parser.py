@@ -9,7 +9,6 @@ def parse_body(message): # returns tuple plain + html
     if type(message) == str:
         return message.encode('utf-8') , b''
     if message.is_multipart():
-        print("is multipart")
         for payl in message.get_payload():
             plain_, html_ = parse_body(payl)
             if len(plain_) > 0:
@@ -20,12 +19,10 @@ def parse_body(message): # returns tuple plain + html
     if message.get_filename(): # is it attachment?
         return plain, html
     ct = message.get_content_type()
-    print(ct)
     if ct.find('html')!= -1:
         html = message.get_payload(decode=True)
     elif ct.find('plain') != -1:
         plain = message.get_payload(decode=True)
-        print(plain)
     elif ct.find('alternative') != -1:
         for payl in message.get_payload():
             if payl.get_content_type() == 'text/plain':
