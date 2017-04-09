@@ -69,8 +69,9 @@ class Imap:
         if len(self.ids) == 0:
             return False
         typ, data = self.connection.fetch(self.ids.pop(), '(RFC822)')
-        self.content = quopri.decodestring(data[0][1]).decode('utf-8',
-                                                              'ignore')
+        # self.content = quopri.decodestring(data[0][1]).decode('utf-8',
+                                                              # 'ignore')
+        self.content = data[0][1]
         return True
 
     def get_message(self) -> str:
