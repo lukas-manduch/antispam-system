@@ -1,6 +1,6 @@
 import imaplib
 import re
-
+import quopri
 """
 Imap class, usage:
 
@@ -69,7 +69,8 @@ class Imap:
         if len(self.ids) == 0:
             return False
         typ, data = self.connection.fetch(self.ids.pop(), '(RFC822)')
-        self.content = data[0][1].decode('utf-8')
+        self.content = quopri.decodestring(data[0][1]).decode('utf-8',
+                                                              'ignore')
         return True
 
     def get_message(self) -> str:
