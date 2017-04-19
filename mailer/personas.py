@@ -1,12 +1,13 @@
 import sys
 import os
 import json
+import codecs
 
 """
 Class for representing personas
 Usage: 
 p = Personas(dir_name) # -> Still invalid state
-if (p.next())
+if (p.next()):
 p.data()["first-name"]
 ....
 if (p.next())
@@ -25,8 +26,10 @@ class Personas:
 
 
     def __get_index(self, index):
-        file_handle = open(os.path.join(self.directory,
-                                        self.directory_list[index]),"r")
+        file_handle = codecs.open(os.path.join(self.directory,
+                                               self.directory_list[index]),
+                                  "r",
+                                  "utf-8")
         decoder = json.JSONDecoder()
         data = decoder.decode(file_handle.read())
         file_handle.close()
