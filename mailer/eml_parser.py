@@ -1,4 +1,5 @@
 from email import *
+from email.header import decode_header
 import base64
 import chardet
 
@@ -29,6 +30,15 @@ def parse_body(message): # returns tuple plain + html
                 plain += payl.get_payload(decode=True)
     return plain , html
 
+def header_utf(header):
+    arr = decode_header(header)
+    out = str()
+    for part in arr:
+        if type(part[0]) == bytes:
+            out += part[0].decode('utf-8', errors='ignore')
+        else:
+            out += part[0]
+    return out
 
 class EmlParser:
     def __init__(self, eml_content):
@@ -51,10 +61,10 @@ class EmlParser:
         return self.msg['From']
 
     def get_sender(self):
-        return self.msg['From']
+        return header_utf(self.msg['From'])
 
     def get_subject(self):
-        return self.msg['Subject']
+        return header_utf(self.msg['Subject'])
 
     def get_date(self):
-        return self.msg['Date']
+        return header_utf(self.msg['Date'])
