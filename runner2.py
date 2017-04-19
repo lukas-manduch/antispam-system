@@ -86,7 +86,17 @@ def get_question(name, person_name):
     __set_json(os.path.join(path, QUESTIONS), questions)
     return question
     
-    
+def find_free_file(path):
+    if not os.path.exists(path):
+        print("ERROR: PATH doesn't exist" + path)
+        raise Exception("ERROR: PATH doesn't exist" + path)
+    i = 1
+    while True:
+        if os.path.exists(os.path.join(path, str(i))):
+            i += 1
+            print("File exists " + str(i))
+            continue
+        return os.path.join(path, str(i))
                 
 
 # print(get_question("Neil Wilson <neilw243@yahoo.com>", "1.json"))
@@ -140,3 +150,9 @@ while p.next():
                 reply_to_message))
             s.send()
             # Save message to file
+            fHandle = open(find_free_file(
+                create_folder_for_person(e.get_sender(),
+                                         pers['email'])),
+                           "w")
+            fHandle.write(reply)
+            fHandle.close()
