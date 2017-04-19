@@ -148,7 +148,7 @@ while p.next():
                 e.get_date(),
                 e.get_subject(),
                 reply_to_message))
-            s.send()
+            sent_m = s.send()
             # Save message to file
             fHandle = open(find_free_file(
                 create_folder_for_person(e.get_sender(),
@@ -156,3 +156,4 @@ while p.next():
                            "w")
             fHandle.write(reply)
             fHandle.close()
+            i.add_sent(sent_m)

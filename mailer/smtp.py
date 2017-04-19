@@ -27,3 +27,4 @@ class Smtp:
         self.connection.sendmail(self.message['From'],
                                  self.message['To'],
                                  self.message.as_string())
+        return self.message.as_string()

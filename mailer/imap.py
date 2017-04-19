@@ -1,6 +1,9 @@
 import imaplib
 import re
 import quopri
+import datetime
+
+
 """
 Imap class, usage:
 
@@ -76,3 +79,15 @@ class Imap:
 
     def get_message(self) -> str:
         return self.content
+
+
+    def add_sent(self, message) -> bool:
+        try:
+            self.connection.append('Sent',
+                                   '\Seen',
+                                   datetime.datetime.now(datetime.timezone.utc),
+                                   message.encode('utf-8',errors='ignore'))
+        except Exception as e:
+            print("ERROR: message not saved in Sent: " + str(e))
+
+
