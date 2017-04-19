@@ -14,6 +14,8 @@ from yandex_translate import YandexTranslate
 import json
 import random
 
+QUESTIONS = "questions.json"
+LOGS = "logs"
 
 def form_reply(from_, date, subject, message):
     return "\n\n---------- Original Message ----------\n" \
@@ -27,13 +29,33 @@ def name_from_address(from_):   # Argument is some email Reply-to
     name = from_.split()[0] + from_.split()[1]
     name = name.lower()
     return name
+
+def __to_file_name(name):
+    return re.sub('\W', '_', name)
     
 
-def create_folder_for_person(name):
+    
+def __get_json(file_name):
+    fHandle = open(file_name, "r" )
+    jData = json.JSONDecoder().decode(fHandle.read())
+    fHandle.close()
+    return jData
+
+
+def __set_json(file_name, json_data):
+    fHandle = open(file_name,"w")
+    fHandle.write(json.JSONEncoder().encode(json_data))
+    fHandle.close()
+
+
+def create_folder_for_person(spammer_name, person_name):
     # Create folder for person
     if not os.path.exists("logs"):
         os.makedirs("logs")
-    folder_path = os.path.join("logs" , name_from_address(name))
+    folder_path = os.path.join(LOGS, __to_file_name(person_name))
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    folder_path = os.path.join(folder_path , name_from_address(spammer_name))
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     # Copy questions to file
@@ -42,42 +64,37 @@ def create_folder_for_person(name):
     if os.path.exists(os.path.join(folder_path, "questions.json")):
         # Already exists file with questions
         return folder_path
-    fHandle = open("questions.json", "r")
-    data = json.JSONDecoder().decode(fHandle.read())
-    fHandle.close()
+    data = __get_json(QUESTIONS)
     random.seed()
     out_data = list()
     for list_ in data:
         out_data.append(list_[random.randint(0, len(list_) -1)])
-    fHandle = open(os.path.join(folder_path, "questions.json"), "w")
-    fHandle.write(json.JSONEncoder().encode(out_data))
-    fHandle.close()
+    __set_json(os.path.join(folder_path, QUESTIONS), out_data)
     return folder_path
     
-def get_question(name):
-    path = create_folder_for_person(name)
-    fHandle = open(os.path.join(path, "questions.json"), "r" )
-    questions = json.JSONDecoder().decode(fHandle.read())
-    fHandle.close()
+
+def get_question(name, person_name):
+    """
+    Loads file with questions and removes first one
+    from this file and returns it
+    """
+    path = create_folder_for_person(name, person_name)
+    questions = __get_json(os.path.join(path, QUESTIONS))
     if len(questions) == 0:
         return ""
     question = questions.pop()
-    fHandle = open(os.path.join(path, "questions.json"),"w")
-    fHandle.write(json.JSONEncoder().encode(questions))
-    fHandle.close()
+    __set_json(os.path.join(path, QUESTIONS), questions)
     return question
     
     
                 
 
-print(get_question("Neil Wilson <neilw243@yahoo.com>"))
+# print(get_question("Neil Wilson <neilw243@yahoo.com>", "1.json"))
         
 
-# p = Personas(".\personas")
+p = Personas(".\personas")
 
-# cw = CleverWrap("CC1mmFptGklBB3wFbRtjhqGw7AA")
-# print(cw.say("Hello"))
-"""
+cw = CleverWrap("CC1mmFptGklBB3wFbRtjhqGw7AA")
 
 while p.next():
     pers = p.get_data()
@@ -97,15 +114,14 @@ while p.next():
                 print("Too short message, skipping")
                 continue
             reply_to_message = message # Will be used in email
+            print("message")
+            print(message.encode('utf-8', errors='ignore'))
+            print('-----------')
             # Detect language
             # Classify
             # Pick chatbot
-            if message.lower().find("address") != -1:
-                reply = "Here are data you requested\n" \
-                        "%s\n%s\n%s" % (pers['name'] + " " +
-                                        pers['surname'],
-                                        pers['address'],
-                                        pers['email'])
+            # print(e.get_sender()[1][0])
+            reply = get_question(e.get_sender(),pers['email'])
             print("Got reply")
             print(reply)
             # Personalize
@@ -123,4 +139,4 @@ while p.next():
                 e.get_subject(),
                 reply_to_message))
             s.send()
-"""
+            # Save message to file
