@@ -74,7 +74,10 @@ class Imap:
         typ, data = self.connection.fetch(self.ids.pop(), '(RFC822)')
         # self.content = quopri.decodestring(data[0][1]).decode('utf-8',
                                                               # 'ignore')
+        print(data)
         self.content = data[0][1]
+        if type(self.content) != bytes: # Heuristic
+            self.content = data[1][1]
         return True
 
     def get_message(self) -> str:
