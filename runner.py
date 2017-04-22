@@ -30,9 +30,9 @@ def name_from_address(from_):   # Argument is some email Reply-to
 
 def __to_file_name(name):
     return re.sub('\W', '_', name)
-    
 
-    
+
+
 def __get_json(file_name):
     fHandle = open(file_name, "r" )
     jData = json.JSONDecoder().decode(fHandle.read())
@@ -69,7 +69,7 @@ def create_folder_for_person(spammer_name, person_name):
         out_data.append(list_[random.randint(0, len(list_) -1)])
     __set_json(os.path.join(folder_path, QUESTIONS), out_data)
     return folder_path
-    
+
 
 def get_question(name, person_name):
     """
@@ -83,7 +83,7 @@ def get_question(name, person_name):
     question = questions.pop()
     __set_json(os.path.join(path, QUESTIONS), questions)
     return question
-    
+
 def find_free_file(path):
     if not os.path.exists(path):
         print("ERROR: PATH doesn't exist" + path)
@@ -95,12 +95,12 @@ def find_free_file(path):
             print("File exists " + str(i))
             continue
         return os.path.join(path, str(i))
-                
+
 
 # print(get_question("Neil Wilson <neilw243@yahoo.com>", "1.json"))
-        
 
-p = Personas(".\personas")
+
+p = Personas("personas")
 
 while p.next():
     pers = p.get_data()
@@ -114,18 +114,19 @@ while p.next():
             e = EmlParser(i.get_message())
             body = e.get_body()
             print(e.get_subject())
-            message = parse_reply(e.get_body().decode('utf-8',
+            message = parse_reply(e.get_context().decode('utf-8',
                                                       errors='ignore'))
             if len(message) < 2:
                 print("Too short message, skipping")
                 continue
-            reply_to_message = message # Will be used in email
+            reply_to_message = body[0].decode('utf-8',
+                                              errors='ignore')
             print("message")
             print(message.encode('utf-8', errors='ignore'))
             print('-----------')
             # Detect language
             english_set = set(w.lower()
-                                for w in nltk.corpus.words.words()) 
+                                for w in nltk.corpus.words.words())
             text_set = set( w.lower() for w in
                               re.sub( '\W', ' ', message).split()
                               if w[0].isalpha() )

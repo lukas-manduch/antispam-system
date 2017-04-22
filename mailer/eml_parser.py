@@ -1,9 +1,13 @@
 from email import *
 from email.header import decode_header
+from bs4 import BeautifulSoup
+from markdown import markdown
 import base64
 import chardet
+import re
 
-    
+
+
 def parse_body(message): # returns tuple plain + html
     plain = bytes()
     html = bytes()
@@ -43,19 +47,18 @@ def header_utf(header):
 class EmlParser:
     def __init__(self, eml_content):
         parser = feedparser.FeedParser()
-        parser.feed(eml_content.decode('utf-8'))
+        parser.feed(eml_content.decode('utf-8', errors='ignore'))
         self.msg = parser.close()
         self.plain = bytes()
         self.content = bytes()
         self.plain , self.content = parse_body(self.msg)
 
 
-    def get_body(self) -> str:
-        if len(self.plain) != 0:
-            return self.plain
-        return self.content
+    def get_body(self):
+        # Returns plain and html parts
+        return self.plain, self.content
 
-    def get_from_address(self) -> str:
+    def get_from_address(self):
         if self.msg['Reply-to'] != None:
             return self.msg['Reply-to']
         return self.msg['From']
@@ -68,3 +71,12 @@ class EmlParser:
 
     def get_date(self):
         return header_utf(self.msg['Date'])
+
+    def get_context(self):
+        # Returns content as plain text
+        if len(self.plain) != 0:
+            return self.plain
+        m = markdown(self.content)
+        return ''.join(BeautifulSoup(m,
+                                     "lxml").findAll(text=True))
+        

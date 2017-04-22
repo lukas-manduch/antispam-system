@@ -102,9 +102,7 @@ def find_free_file(path):
 # print(get_question("Neil Wilson <neilw243@yahoo.com>", "1.json"))
         
 
-p = Personas(".\personas")
-
-cw = CleverWrap("CC1mmFptGklBB3wFbRtjhqGw7AA")
+p = Personas("./personas")
 
 while p.next():
     pers = p.get_data()
@@ -118,12 +116,14 @@ while p.next():
             e = EmlParser(i.get_message())
             body = e.get_body()
             print(e.get_subject())
-            message = parse_reply(e.get_body().decode('utf-8',
+            message = parse_reply(e.get_context().decode('utf-8',
                                                       errors='ignore'))
             if len(message) < 2:
                 print("Too short message, skipping")
                 continue
-            reply_to_message = message # Will be used in email
+            # Will be used in email
+            reply_to_message = body[0].decode('utf-8',
+                                              errors='ignore')
             print("message")
             print(message.encode('utf-8', errors='ignore'))
             print('-----------')
@@ -132,6 +132,11 @@ while p.next():
             # Pick chatbot
             # print(e.get_sender()[1][0])
             reply = get_question(e.get_sender(),pers['email'])
+            if len(reply) == 0:
+                print(message)
+                print("Out of replies")
+                sys.stdin.readline()
+                break # Not sure what should be here
             print("Got reply")
             print(reply)
             # Personalize
