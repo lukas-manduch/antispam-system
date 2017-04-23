@@ -46,8 +46,8 @@ def header_utf(header):
 
 class EmlParser:
     def __init__(self, eml_content):
-        parser = feedparser.FeedParser()
-        parser.feed(eml_content.decode('utf-8', errors='ignore'))
+        parser = feedparser.BytesFeedParser()
+        parser.feed(eml_content)
         self.msg = parser.close()
         self.plain = bytes()
         self.content = bytes()
@@ -77,6 +77,9 @@ class EmlParser:
         if len(self.plain) != 0:
             return self.plain
         m = markdown(self.content)
-        return ''.join(BeautifulSoup(m,
+        ret= ''.join(BeautifulSoup(m,
                                      "lxml").findAll(text=True))
+        if type(ret) == str:
+            ret = ret.encode('utf-8', errors='ignore')
+        return ret
         
