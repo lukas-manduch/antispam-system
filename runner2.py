@@ -25,8 +25,10 @@ def form_reply(from_, date, subject, message):
                                                  message)
 
 def name_from_address(from_):   # Argument is some email Reply-to
-    name = re.sub('\W' , ' ', from_)
-    name = from_.split()[0] + from_.split()[1]
+    name = re.search('(?P<mail>[\w.-]+@[\w.-]+.\w+)',
+                     from_).group('mail')
+    name = re.sub('\W' , '_', name)
+    #name = from_.split()[0] + from_.split()[1]
     name = name.lower()
     return name
 
@@ -102,7 +104,7 @@ def find_free_file(path):
 # print(get_question("Neil Wilson <neilw243@yahoo.com>", "1.json"))
         
 
-p = Personas("./personas")
+p = Personas("personas2")
 
 while p.next():
     pers = p.get_data()
