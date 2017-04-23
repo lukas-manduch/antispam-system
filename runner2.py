@@ -133,7 +133,7 @@ while p.next():
             # Classify
             # Pick chatbot
             # print(e.get_sender()[1][0])
-            reply = get_question(e.get_sender(),pers['email'])
+            reply = get_question(e.get_from_address(),pers['email'])
             if len(reply) == 0:
                 print(message)
                 print("Out of replies")
