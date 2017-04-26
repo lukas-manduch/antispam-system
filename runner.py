@@ -23,8 +23,10 @@ def form_reply(from_, date, subject, message):
                                                  message)
 
 def name_from_address(from_):   # Argument is some email Reply-to
-    name = re.sub('\W' , ' ', from_)
-    name = from_.split()[0] + from_.split()[1]
+    name = re.search('(?P<mail>[\w.-]+@[\w.-]+.\w+)',
+                     from_).group('mail')
+    name = re.sub('\W' , '_', name)
+    #name = from_.split()[0] + from_.split()[1]
     name = name.lower()
     return name
 
