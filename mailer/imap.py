@@ -23,7 +23,7 @@ def get_mailbox(line):
 
 class Imap:
     def __init__(self, host, name, password):
-        self.connection = imaplib.IMAP4(host)
+        self.connection = imaplib.IMAP4_SSL(host)
         self.connection.login(name, password)
         self.mailboxes = list() # list of names of mailboxes
         self.ids = list() # list of ids of messages in current mailbox
@@ -35,9 +35,12 @@ class Imap:
             self.mailboxes.append(m_name)
 
     def __del__(self):
-        if self.open:
-            self.connection.close()
-        self.connection.logout()
+        try:
+            if self.open:
+                self.connection.close()
+            self.connection.logout()
+        except Exception as e:
+            print("Error while closing imap, " + str(e))
     
     def next(self) -> bool:
         """
@@ -71,10 +74,11 @@ class Imap:
     def next_message(self) -> bool:
         if len(self.ids) == 0:
             return False
-        typ, data = self.connection.fetch(self.ids.pop(), '(RFC822)')
+        eid = self.ids.pop()
+        typ, data = self.connection.fetch(eid, '(RFC822)')
         # self.content = quopri.decodestring(data[0][1]).decode('utf-8',
                                                               # 'ignore')
-        print(data)
+        self.connection.store(eid, '+FLAGS', '\Seen')
         self.content = data[0][1]
         if type(self.content) != bytes: # Heuristic
             self.content = data[1][1]
