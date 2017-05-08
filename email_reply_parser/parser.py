@@ -1,4 +1,7 @@
 """
+Prevzate zo https://github.com/github/email_reply_parser
+Pouzita licencia MIT
+
 Ported from https://github.com/github/email_reply_parser
 
 EmailReplyParser is a small library to parse plain text email content.  The

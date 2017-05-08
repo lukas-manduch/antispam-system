@@ -1,4 +1,9 @@
 """
+Prevzate zo stranky: https://github.com/edwardslabs/cleverwrap.py
+Pouzita licencia: MIT
+"""
+
+"""
 CleverWrap.py
 
 Python wrapper for Cleverbot's API.

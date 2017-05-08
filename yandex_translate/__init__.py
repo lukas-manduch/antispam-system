@@ -1,3 +1,8 @@
+"""
+Prevzate zo stranky:
+https://github.com/dveselov/python-yandex-translate
+Licencia: Public
+"""
 # coding: utf-8
 
 import requests
