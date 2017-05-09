@@ -59,8 +59,8 @@ class EmlParser:
         return self.plain, self.content
 
     def get_from_address(self):
-        if self.msg['Reply-to'] != None:
-            return self.msg['Reply-to']
+        if self.msg['Reply-To'] != None:
+            return self.msg['Reply-To']
         return self.msg['From']
 
     def get_sender(self):

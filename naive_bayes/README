@@ -1,0 +1,7 @@
+Tato zlozka sluzi len na vyhdonocovanie klasifikatorov.
+
+Prikaz
+python test.py bad2 good 4
+bol pouzity na vyhodnotenie confusion metrics
+
+Nasledne roc krivka bola robena nad adresarmi good_small a bad

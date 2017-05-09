@@ -20,10 +20,19 @@ def plot(real, predicted, name):
     plt.savefig(name+".png")
     plt.close()
 
+def increase(num):
+    if num == 0:
+        return num
+    while num < 0.01 and num > -0.01:
+        num *= 10
+    return num
+
 def diff(prob_good, prob_bad):
-    ret = 0.5
-    ret += (float(prob_bad)-float(prob_good))/2
-    return ret
+    ret = 0
+    ret += prob_bad-prob_good
+    if ret == 0:
+        return 0
+    return 0.5 + increase(ret)/2
 
 if len(sys.argv) != 4:
     print("Arguments are")
@@ -84,9 +93,19 @@ for fname in direct2:
     # probf.append(f.fisher_probability(content, "bad"))
     bad = (f.fisher_probability(content, "bad"))
     good = (f.fisher_probability(content, "good"))
-    probf.append(diff(good, bad))    
+    fis = bad - good
+    if fis < 0:
+        fis = 0
+    # probf.append(diff(good, bad))
+    probf.append(fis)    
     real.append(0)
 
 
 plot(real, probb, "bayes")
 plot(real, probf, "fisher")
+
+print(len(real))
+print(len(probb))
+print(len(probf))
+print(real)
+print(probf)

@@ -1,0 +1,18 @@
+[
+    [
+	"I am very happy, but are you sure this is safe?",
+	"Hello, that's good, but I am little bit concerned about my security",
+	"I am not sure, if I want to continue in this thing, I am worried about legal consequneces"
+    ]
+    ,
+    [
+	"",
+	"Could you give me more info then?"
+    ]
+    ,
+    [
+	"Hello, that sounds great, but are you sure you haven't mistaken me?",
+	"Hi are you sure you intented to send mail to me?",
+	"I don't know who you are, can I trust you?"
+    ]
+]

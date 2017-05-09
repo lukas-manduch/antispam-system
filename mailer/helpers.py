@@ -8,6 +8,7 @@ import nltk
 import re
 from yandex_translate import YandexTranslate
 
+from .classifier import *
 
 QUESTIONS = "questions.json"
 LOGS = "logs"
@@ -130,3 +131,13 @@ def cleverbot_reply(message):
     reply = (cw.say(sentence))
     return reply
 
+def is_spam(db_name, message):
+    if type(message) != str:
+        message = message.decode('utf-8', errors='ignore')
+    c = MyClassifier(db_name)
+    f = Fisher(c)
+    bad = (f.fisher_probability(message, "bad"))
+    good = (f.fisher_probability(message, "good"))
+    print(bad)
+    print(good)
+    return bad > good

@@ -11,7 +11,7 @@ import re
 import random
 
 
-p = Personas("personas")
+p = Personas("personas3")
 
 while p.next():
     pers = p.get_data()
@@ -39,7 +39,10 @@ while p.next():
             # Classify
             if e.get_subject().lower().find("re:") == -1:
                 # Use classifier
-                pass
+                print("Classifiying")
+                if not is_spam('0', message):
+                    print("not spam")
+                    continue
             # Pick chatbot
             if message.lower().find("address") != -1:
                 reply = "Here are data you requested\n" \
@@ -74,3 +77,5 @@ while p.next():
             fHandle.write(reply)
             fHandle.close()
             i.add_sent(sent_m)
+
+

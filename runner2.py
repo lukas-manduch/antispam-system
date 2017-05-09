@@ -42,7 +42,10 @@ while p.next():
             # Classify
             if e.get_subject().lower().find("re:") == -1:
                 # Use classifier
-                pass
+                print("Classifiying")
+                if not is_spam('0', message):
+                    print("not spam")
+                    continue
             reply = get_question(e.get_from_address(),pers['email'])
             if len(reply) == 0:
                 reply = cleverbot_reply(message)

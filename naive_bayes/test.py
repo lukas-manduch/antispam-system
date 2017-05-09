@@ -29,6 +29,7 @@ def train(db_name, category, file_list):
                                          errors='ignore'),
                         category)
 
+
 def test(db_name, file_list):
         c = MyClassifier(db_name)
         f = Fisher(c)
@@ -40,7 +41,7 @@ def test(db_name, file_list):
                 fh.close()
                 good = f.fisher_probability(content, "good")
                 harm = f.fisher_probability(content, "bad")
-                if harm > good:
+                if harm > good*1.05:
                         out[0] += 1
 
                 good = b.document_probability(content, "good")
